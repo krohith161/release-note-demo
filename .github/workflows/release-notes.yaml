@@ -1,4 +1,4 @@
-name: Export PR Comments with Template
+name: Generate Release Notes
 
 on:
   push:
@@ -6,24 +6,35 @@ on:
       - 'v*'
 
 jobs:
-  generate-release-notes:
+  release-notes:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
-      - name: Install Jinja2
+      - name: Install dependencies
         run: pip install jinja2
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install gh -y
+
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
       - name: Generate release notes using Jinja template
         run: python scripts/generate_release_notes.py
 
       - name: Upload release notes as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: release-notes
           path: release_notes.md
