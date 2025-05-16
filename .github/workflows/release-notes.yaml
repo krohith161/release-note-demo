@@ -31,7 +31,8 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
       - name: Generate release notes using Jinja template
-        run: python scripts/generate_release_notes.py
+        run: |
+          python scripts/generate_release_notes.py
 
       - name: Upload release notes as artifact
         uses: actions/upload-artifact@v3
