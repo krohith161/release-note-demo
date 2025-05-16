@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
-      - name: Generate release notes
+      - name: Generate release notes using template
         run: |
           TEMPLATE_FILE=".github/templates/release_template.md"
           OUTPUT_FILE="release_notes.md"
@@ -54,3 +54,8 @@ jobs:
             echo "" >> $OUTPUT_FILE
           done
 
+      - name: Upload release notes as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release_notes.md
