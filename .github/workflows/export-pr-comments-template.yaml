@@ -1,0 +1,56 @@
+name: Export PR Comments with Template
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  export-comments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install gh -y
+
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Generate release notes
+        run: |
+          TEMPLATE_FILE=".github/templates/release_template.md"
+          OUTPUT_FILE="release_notes.md"
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          NOW_DATE=$(date +"%Y-%m-%d")
+          NOW_TIME=$(date +"%H:%M:%S")
+
+          echo "# Release Notes for $TAG_NAME" > $OUTPUT_FILE
+          echo "_Date: $NOW_DATE_" >> $OUTPUT_FILE
+          echo "_Time: $NOW_TIME_" >> $OUTPUT_FILE
+          echo "" >> $OUTPUT_FILE
+
+          prs=$(gh pr list --base main --state merged --limit 20 --json number,title --jq '.[]')
+          echo "$prs" | jq -c '.' | while read pr; do
+            pr_number=$(echo "$pr" | jq '.number')
+            pr_title=$(echo "$pr" | jq -r '.title')
+
+            echo "## PR #$pr_number – $pr_title" >> $OUTPUT_FILE
+
+            comments=$(gh pr view "$pr_number" --json comments --jq '.comments[].body')
+            if [ -z "$comments" ]; then
+              echo "_No comments_" >> $OUTPUT_FILE
+            else
+              echo "$comments" | while read -r comment; do
+                echo "- $comment" >> $OUTPUT_FILE
+              done
+            fi
+
+            echo "" >> $OUTPUT_FILE
+          done
+
