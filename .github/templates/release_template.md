@@ -1,4 +1,4 @@
-# Release Notes for v{{ version }}
+# Release Notes for version{{ version }}
 
 **Date:** {{ date }}  
 **Time:** {{ time }}
