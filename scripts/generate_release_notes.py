@@ -18,9 +18,10 @@ def get_pr_details(pr_number):
     pr = json.loads(result.stdout)
     comments = [c["body"] for c in pr.get("comments", [])]
     created_at = pr["createdAt"]
+    # Add " UTC" to created_at
     return {
         "comments": comments,
-        "created_at": datetime.fromisoformat(created_at.replace("Z", "+00:00")).strftime("%Y-%m-%d %H:%M:%S")
+        "created_at": datetime.fromisoformat(created_at.replace("Z", "+00:00")).strftime("%Y-%m-%d %H:%M:%S") + " UTC"
     }
 
 def main():
