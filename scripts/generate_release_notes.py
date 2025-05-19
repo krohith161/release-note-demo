@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 import subprocess
@@ -29,7 +30,10 @@ def main():
         pr["comments"] = details["comments"]
         pr["created_at"] = details["created_at"]
 
-    tag = subprocess.run(["echo", "${GITHUB_REF#refs/tags/}"], capture_output=True, text=True).stdout.strip()
+    # Fix tag extraction
+    ref = os.environ.get("GITHUB_REF", "")
+    tag = ref.split("/")[-1] if ref.startswith("refs/tags/") else ""
+
     now = datetime.now()
     data = {
         "version": tag,
@@ -37,6 +41,8 @@ def main():
         "time": now.strftime("%H:%M:%S"),
         "prs": prs,
     }
+
+    print(data)  # Debug
 
     env = Environment(loader=FileSystemLoader(".github/templates"))
     template = env.get_template("release_template.md")
@@ -47,4 +53,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
