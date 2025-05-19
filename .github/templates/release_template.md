@@ -1,49 +1,11 @@
-# Release Notes for vv1.2.17
-
-**Date:** 2025-05-19  
-**Time:** 10:55:50 UTC
-
----
-
-## Summary
-
-- **Total PRs:** 5
-
----
-
-## Pull Requests
-
 | PR # | Title | Created At (UTC) | Comments |
 |------|-------|------------------|----------|
-
-| 5 | added template-based pr comments exporter | 2025-05-16 08:25:42 UTC | 
-
-  
-    - add template-based pr comments exporter<br>
-  
-
+{% for pr in prs -%}
+| {{ pr.number }} | {{ pr.title }} | {{ pr.created_at }} | 
+{%- if pr.comments|length > 0 -%}
+{{ pr.comments | join('<br>') }}
+{%- else -%}
+_No comments_
+{%- endif -%}
 |
-
-| 4 | Fix2 | 2025-05-15 10:24:06 UTC | 
-
-  _No comments_
-
-|
-
-| 3 | Fix: correct CLI setup action | 2025-05-15 10:15:22 UTC | 
-
-  _No comments_
-
-|
-
-| 2 |  Added workflow to export PR comments  | 2025-05-15 10:05:23 UTC | 
-
-  _No comments_
-
-|
-
-| 1 | add logging line | 2025-05-15 09:57:46 UTC | 
-
-  _No comments_
-
-|
+{% endfor %}
