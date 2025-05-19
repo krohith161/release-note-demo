@@ -1,17 +1,28 @@
-# Release Notes for {{ version }}
+# Release Notes for v{{ version }}
 
-_Date: {{ date }} | Time: {{ time }}_
+**Date:** {{ date }}  
+**Time:** {{ time }}
 
+---
+
+## Summary
+
+- **Total PRs:** {{ prs|length }}
+
+---
+
+## Pull Requests
+
+| PR # | Title | Created At (UTC) | Comments |
+|------|-------|------------------|----------|
 {% for pr in prs %}
-## PR #{{ pr.number }} – {{ pr.title }}
-_Created At: {{ pr.created_at }}_
-
-{% if pr.comments %}
-{% for comment in pr.comments %}
-- {{ comment }}
-{% endfor %}
+| {{ pr.number }} | {{ pr.title }} | {{ pr.created_at }} | 
+{% if pr.comments|length > 0 %}
+  {% for comment in pr.comments %}
+    - {{ comment }}<br>
+  {% endfor %}
 {% else %}
-_No comments_
+  _No comments_
 {% endif %}
-
+|
 {% endfor %}
