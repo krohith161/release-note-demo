@@ -34,11 +34,12 @@ def main():
     ref = os.environ.get("GITHUB_REF", "")
     tag = ref.split("/")[-1] if ref.startswith("refs/tags/") else ""
 
-    now = datetime.now()
+    # Use UTC time and append 'UTC'
+    now = datetime.utcnow()
     data = {
         "version": tag,
         "date": now.strftime("%Y-%m-%d"),
-        "time": now.strftime("%H:%M:%S"),
+        "time": now.strftime("%H:%M:%S") + " UTC",
         "prs": prs,
     }
 
