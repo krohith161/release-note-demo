@@ -1,7 +1,7 @@
-# Release Notes for versionv1.3.7
+# Release Notes for versionv1.3.8
 
 **Date:** 2025-05-20  
-**Time:** 07:53:55 UTC
+**Time:** 11:20:20 UTC
 
 ---
 
