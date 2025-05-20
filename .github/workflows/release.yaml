@@ -35,23 +35,19 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
-      - name: Generate release notes using Jinja template
-        run: |
-          python scripts/generate_release_notes.py
-
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Remove existing release_notes.md if present
-        run: |
-          rm -f release_notes.md
-
-      - name: Ensure main branch is checked out
+      - name: Fetch and checkout main branch
         run: |
           git fetch origin main
           git checkout main
+
+      - name: Generate release notes using Jinja template
+        run: |
+          python scripts/generate_release_notes.py
 
       - name: Add and commit release notes
         run: |
